@@ -84,21 +84,16 @@ jobs:
       - name: Compose full target branch name
         id: full_branch
         run: |
-          echo "full_branch=${{ matrix.target.branch }}/${{ steps.branch_parts.outputs.suffix }}" >> $GITHUB_OUTPUT
+          echo "full_branch=${{ matrix.target.branch }}/${{ steps.branch_parts.outputs.suffix }}" >> $GITHUB_OUTPUT         
 
-
-      - name: Create/switch to new branch and make changes
+          
+      - name: Replace lines in defconfig
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git checkout -B ${{ steps.full_branch.outputs.full_branch }}
           echo "// Auto-generated on $(date)" > generated_file.txt
           git add generated_file.txt
-          git commit -m "Automated commit to ${{ steps.full_branch.outputs.full_branch }}" || echo "Nothing to commit"
-          git push origin ${{ steps.full_branch.outputs.full_branch }} --force
-          
-      - name: Replace lines in defconfig
-        run: |
           # Create arrays from matrix values
           IFS=',' read -ra old <<< "${{ matrix.target.replace_old }}"
           IFS=',' read -ra new <<< "${{ matrix.target.replace_new }}"
@@ -118,6 +113,9 @@ jobs:
             # In-place replacement
             sed -i "s|$from_escaped|$to_escaped|" "$config_file"
           done
+
+          git commit -m "Automated commit to ${{ steps.full_branch.outputs.full_branch }}" || echo "Nothing to commit"
+          git push origin ${{ steps.full_branch.outputs.full_branch }} --force
 
           
       - name: Trigger workflow on new branch
