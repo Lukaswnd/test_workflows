@@ -73,10 +73,19 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ env.GH_TOKEN }}
+      
+      - name: Extract suffix from current branch
+        id: branch_parts
+        run: |
+          full="${GITHUB_REF_NAME}"
+          suffix="${full#*/}" # removes everything up to and including the first '/'
+          echo "suffix=$suffix" >> $GITHUB_OUTPUT
 
-      - name: Get current branch name
-        id: branch
-        run: echo "branch_name=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
+      - name: Compose full target branch name
+        id: full_branch
+        run: |
+          echo "full_branch=${{ matrix.target.branch }}/${{ steps.branch_parts.outputs.suffix }}" >> $GITHUB_OUTPUT
+
 
       - name: Create/switch to new branch and make changes
         run: |
@@ -114,7 +123,7 @@ jobs:
       - name: Trigger workflow on new branch
         run: |
           gh workflow run test.yaml \
-            --ref ${{ matrix.target.branch }} \
+            --ref ${{ steps.full_branch.outputs.full_branch }} \
             --repo $GITHUB_REPOSITORY \
             -f target=${{ matrix.target.input_target }} \
             -f log_level=${{ matrix.target.log_level }} \
