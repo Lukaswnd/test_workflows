@@ -51,5 +51,5 @@ jobs:
           ref="${GITHUB_REF_NAME}"
           run="${GITHUB_RUN_NUMBER}"
           echo "Current branch: $ref"
-          echoe "Run number : $run"
+          echo "Run number : $run"
       
