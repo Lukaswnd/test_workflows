@@ -91,11 +91,11 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git checkout -B ${{ matrix.target.branch }}
+          git checkout -B ${{ steps.full_branch.outputs.full_branch }}
           echo "// Auto-generated on $(date)" > generated_file.txt
           git add generated_file.txt
-          git commit -m "Automated commit to ${{ matrix.target.branch }}" || echo "Nothing to commit"
-          git push origin ${{ matrix.target.branch }} --force
+          git commit -m "Automated commit to ${{ steps.full_branch.outputs.full_branch }}" || echo "Nothing to commit"
+          git push origin ${{ steps.full_branch.outputs.full_branch }} --force
           
       - name: Replace lines in defconfig
         run: |
