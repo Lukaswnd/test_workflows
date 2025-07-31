@@ -114,7 +114,7 @@ jobs:
             sed -i "s|$from_escaped|$to_escaped|" "$config_file"
           done
 
-          git add "$file"
+          git add "$config_file"
           git commit -m "Automated commit to ${{ steps.full_branch.outputs.full_branch }}" || echo "Nothing to commit"
           git push origin ${{ steps.full_branch.outputs.full_branch }} --force
 
