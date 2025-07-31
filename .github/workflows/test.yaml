@@ -1,0 +1,51 @@
+name: Test Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        description: Choose Target
+        default: 'all'
+        options:
+        - 'all'
+        - 'esp32'
+        - 'esp32s2'
+        - 'esp32s3'
+        - 'esp32c2'
+        - 'esp32c3'
+        - 'esp32c6'
+        - 'esp32h2'
+        - 'esp32p4'
+      log_level:
+        type: choice
+        description: Choose Log Level
+        default: 'default'
+        options:
+        - 'default'
+        - 'none'
+        - 'verbose'
+        - 'debug'
+        - 'info'
+        - 'warning'
+        - 'error'
+      latest-builder:
+        description: 'Update esp32-arduino-lib-builder'
+        type: boolean
+        default: true 
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    name: Build ${{ github.ref_name }} SDK For ${{ github.event.inputs.target }} as ${{ github.event.inputs.log_level }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Test Step 1
+        id: test_id_1
+        run: |
+          ref="${GITHUB_REF_NAME}"
+          echo "Current branch: $ref"
+      
