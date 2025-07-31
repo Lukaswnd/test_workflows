@@ -45,9 +45,11 @@ jobs:
     steps:
       - name: Test Step 1
         id: test_id_1
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
           ref="${GITHUB_REF_NAME}"
-          run="${github.run_number}"
+          run="${GITHUB_RUN_NUMBER}"
           echo "Current branch: $ref"
           echoe "Run number : $run"
       
