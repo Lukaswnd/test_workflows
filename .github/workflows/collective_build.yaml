@@ -14,8 +14,23 @@ jobs:
       matrix:
         target:
           - branch: rtti/3.3.x
+            input_target: all
+            log_level: default
+            latest_builder: true
+            replace_old: 'CONFIG_IRGEND_WAS=y,# CONFIG_TARGET_IDF is not set'
+            replace_new: '# CONFIG_IRGEND_WAS is not set,CONFIG_TARGET_IDF=y'
           - branch: exceptions/3.3.x
+            input_target: all
+            log_level: default
+            latest_builder: true
+            replace_old: ''
+            replace_new: ''
           - branch: performance/3.3.x
+            input_target: all
+            log_level: default
+            latest_builder: true
+            replace_old: ''
+            replace_new: ''
 
     steps:
       - name: Checkout current branch
@@ -37,9 +52,20 @@ jobs:
           git add generated_file.txt
           git commit -m "Automated commit to ${{ matrix.target.branch }}" || echo "Nothing to commit"
           git push origin ${{ matrix.target.branch }} --force
+      - name: Split and process target list
+        run: |
+          IFS=',' read -ra old <<< "${{ github.event.inputs.replace_old }}"
+          for o in "${old[@]}"; do
+            echo "Processing $o"
+            # Insert whatever logic you need per target
+          done
 
+          
       - name: Trigger workflow on new branch
         run: |
           gh workflow run test.yaml \
             --ref ${{ matrix.target.branch }} \
-            --repo $GITHUB_REPOSITORY
+            --repo $GITHUB_REPOSITORY \
+            -f target=${{ matrix.target.input_target }} \
+            -f log_level=${{ matrix.target.log_level }} \
+            -f latest-builder=${{ matrix.target.latest_builder }}          
