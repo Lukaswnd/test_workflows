@@ -18,7 +18,7 @@ jobs:
             - log_level: warning
             - log_level: info
             - log_level: debug
-            - log_level: verrbose
+            - log_level: verbose
             - log_level: default
 
     steps:
@@ -81,12 +81,27 @@ jobs:
           git add generated_file.txt
           git commit -m "Automated commit to ${{ matrix.target.branch }}" || echo "Nothing to commit"
           git push origin ${{ matrix.target.branch }} --force
-      - name: Split and process target list
+          
+      - name: Replace lines in defconfig
         run: |
-          IFS=',' read -ra old <<< "${{ github.event.inputs.replace_old }}"
-          for o in "${old[@]}"; do
-            echo "Processing $o"
-            # Insert whatever logic you need per target
+          # Create arrays from matrix values
+          IFS=',' read -ra old <<< "${{ matrix.target.replace_old }}"
+          IFS=',' read -ra new <<< "${{ matrix.target.replace_new }}"
+      
+          config_file="my_stuff/configs/defconfig.common"
+      
+          for i in "${!old[@]}"; do
+            from="${old[$i]}"
+            to="${new[$i]}"
+            
+            # Escape slashes for sed safety
+            from_escaped=$(printf '%s\n' "$from" | sed 's/[&/\]/\\&/g')
+            to_escaped=$(printf '%s\n' "$to" | sed 's/[&/\]/\\&/g')
+      
+            echo "Replacing: '$from' → '$to'"
+            
+            # In-place replacement
+            sed -i "s|$from_escaped|$to_escaped|" "$config_file"
           done
 
           
