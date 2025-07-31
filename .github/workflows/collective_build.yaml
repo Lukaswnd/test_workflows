@@ -40,6 +40,6 @@ jobs:
 
       - name: Trigger workflow on new branch
         run: |
-          gh workflow run ${{ test.yaml }} \
+          gh workflow run test.yaml \
             --ref ${{ matrix.target.branch }} \
             --repo $GITHUB_REPOSITORY
