@@ -4,6 +4,35 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-all:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    strategy:
+      matrix:
+        target:
+            - log_level: none
+            - log_level: error
+            - log_level: warning
+            - log_level: info
+            - log_level: debug
+            - log_level: verrbose
+            - log_level: default
+
+    steps:
+      - name: Trigger workflow
+        run: |
+          ref="${GITHUB_REF_NAME}"
+          echo "Current branch: $ref"
+          gh workflow run test.yaml \
+            --ref $ref \
+            --repo $GITHUB_REPOSITORY \
+            -f target=all \
+            -f log_level=${{ matrix.target.log_level }} \
+            -f latest-builder=true
+
   modify-and-trigger:
     runs-on: ubuntu-latest
 
@@ -31,7 +60,7 @@ jobs:
             latest_builder: true
             replace_old: ''
             replace_new: ''
-
+    
     steps:
       - name: Checkout current branch
         uses: actions/checkout@v4
