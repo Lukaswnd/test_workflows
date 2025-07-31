@@ -47,6 +47,7 @@ jobs:
         id: test_id_1
         run: |
           ref="${GITHUB_REF_NAME}"
+          run="${github.run_number}"
           echo "Current branch: $ref"
-          echoe "Run number : ${github.run_number}"
+          echoe "Run number : $run"
       
