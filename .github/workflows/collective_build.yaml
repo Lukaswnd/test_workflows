@@ -42,25 +42,25 @@ jobs:
     strategy:
       matrix:
         target:
-          - branch: rtti/3.3.x
+          - branch: rtti
             input_target: all
             log_level: default
             latest_builder: true
             replace_old: '# CONFIG_COMPILER_CXX_RTTI is not set'
             replace_new: 'CONFIG_COMPILER_CXX_RTTI=y'
-          - branch: exceptions/3.3.x
+          - branch: exceptions
             input_target: all
             log_level: default
             latest_builder: true
             replace_old: '# CONFIG_COMPILER_CXX_EXCEPTIONS is not set'
             replace_new: 'CONFIG_COMPILER_CXX_EXCEPTIONS=y'
-          - branch: rtti-exceptions/3.3.x
+          - branch: rtti-exceptions
             input_target: all
             log_level: default
             latest_builder: true
             replace_old: '# CONFIG_COMPILER_CXX_EXCEPTIONS is not set,# CONFIG_COMPILER_CXX_RTTI is not set'
             replace_new: 'CONFIG_COMPILER_CXX_EXCEPTIONS=y,CONFIG_COMPILER_CXX_RTTI=y'
-          - branch: performance/3.3.x
+          - branch: performance
             input_target: all
             log_level: default
             latest_builder: true
